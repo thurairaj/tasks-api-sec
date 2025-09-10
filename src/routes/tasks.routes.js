@@ -1,8 +1,14 @@
 const express = require("express");
 
-const { listTasks } = require("../controllers/tasks.controller");
+const {
+  listTasks,
+  createTask,
+  getTaskById,
+} = require("../controllers/tasks.controller");
 const router = express.Router();
 
-router.route("/").get(listTasks);
+router.route("/").get(listTasks).post(createTask);
+
+router.route("/:id").get(getTaskById); // /tasks/ofsofous
 
 module.exports = router;
