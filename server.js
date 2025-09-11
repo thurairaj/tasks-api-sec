@@ -1,7 +1,10 @@
 const app = require("./src/app");
+const config = require("./config/index");
 
-const PORT = 3000;
+console.log(config);
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+app.listen(config.port, () => {
+  console.log(
+    `${config.appName} started on port ${config.port} running in ${config.env} mode`,
+  );
 });
