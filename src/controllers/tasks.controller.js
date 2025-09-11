@@ -14,44 +14,43 @@ function createTask(req, res) {
 
 function getTaskById(req, res) {
   const task = _getTask(Number(req.params.id));
-
-  if (!task) {
-    res.status(404).json({ error: "Task not found" });
-  } else {
-    res.status(200).json({ data: task });
-  }
+  res.status(200).json({ data: task });
 }
 
 function updateTask(req, res) {
   const task = _getTask(Number(req.params.id));
-  if (!task) {
-    res.status(404).json({ error: "Task not found" });
-  } else {
-    const indexTask = tasks.findIndex((dbTask) => dbTask.id === task.id);
-    const { title = task.title, completed = task.completed } = req.body;
-    tasks[indexTask] = {
-      id: task.id,
-      title,
-      completed,
-    };
+  const indexTask = _getTaskIndex(task.id);
+  const { title = task.title, completed = task.completed } = req.body;
+  tasks[indexTask] = {
+    id: task.id,
+    title,
+    completed,
+  };
 
-    res.status(200).json({ data: tasks[indexTask] });
-  }
+  res.status(200).json({ data: tasks[indexTask] });
 }
 
 function deleteTask(req, res) {
   const id = Number(req.params.id);
-  const taskIndex = tasks.findIndex((dbTask) => dbTask.id === id);
-  if (taskIndex < 0) {
-    res.status(404).json({ error: "Task not found" });
-  } else {
-    const [removedTask] = tasks.splice(taskIndex, 1);
-    res.status(200).json({ data: removedTask });
-  }
+  const [removedTask] = tasks.splice(_getTaskIndex(id), 1);
+  res.status(200).json({ data: removedTask });
 }
 
 function _getTask(id) {
-  return tasks.find((task) => task.id === id);
+  const task = tasks.find((task) => task.id === id);
+  if (!task) {
+    throw new Error(`Task with id ${id} not found`);
+  }
+
+  return task;
+}
+
+function _getTaskIndex(id) {
+  const taskIndex = tasks.findIndex((dbTask) => dbTask.id === id);
+  if (taskIndex < 0) {
+    throw new Error(`Task with id ${id} not found`);
+  }
+  return taskIndex;
 }
 
 module.exports = {

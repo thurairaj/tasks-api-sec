@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const taskRouter = require("./routes/tasks.routes");
+const { errorHandler } = require("./middleware/error");
 
 const app = express();
 
@@ -14,5 +15,7 @@ app.use("/tasks", taskRouter);
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+app.use(errorHandler);
 
 module.exports = app;
