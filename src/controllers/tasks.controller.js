@@ -13,17 +13,39 @@ function createTask(req, res) {
 }
 
 function getTaskById(req, res) {
-  const id = Number(req.params.id);
-  const task = tasks.find((task) => task.id === id);
+  const task = _getTask(Number(req.params.id));
 
   if (!task) {
     res.status(404).json({ error: "Task not found" });
+  } else {
+    res.status(200).json({ data: task });
   }
-  res.status(200).json({ data: task });
+}
+
+function updateTask(req, res) {
+  const task = _getTask(Number(req.params.id));
+  if (!task) {
+    res.status(404).json({ error: "Task not found" });
+  } else {
+    const indexTask = tasks.findIndex((dbTask) => dbTask.id === task.id);
+    const { title = task.title, completed = task.completed } = req.body;
+    tasks[indexTask] = {
+      id: task.id,
+      title,
+      completed,
+    };
+
+    res.status(200).json({ data: tasks[indexTask] });
+  }
+}
+
+function _getTask(id) {
+  return tasks.find((task) => task.id === id);
 }
 
 module.exports = {
   listTasks,
   createTask,
   getTaskById,
+  updateTask,
 };

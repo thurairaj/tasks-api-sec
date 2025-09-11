@@ -8,7 +8,8 @@ const app = express();
 app.use(cors()); //
 app.use(express.json());
 app.use(morgan("dev"));
-app.use("/tasks", taskRouter); // localhost:3000/tasks/
+
+app.use("/tasks", taskRouter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
